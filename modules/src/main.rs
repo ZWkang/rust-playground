@@ -1,9 +1,15 @@
-mod demo1;
-use demo1::front_of_house::hosting::add;
+use std::fs;
 
+fn main() {
+    let url = "https://www.rust-lang.org/";
+    let output = "rust.md";
+    println!("Fetching url: {}", url);
 
-pub fn main() {
-    println!("Hello, world!");
+    let body = reqwest::blocking::get(url).unwrap().text().unwrap();
 
-    println!("demo1 value: {}", add(3, 4));
+    println!("Converting html to markdown...");
+
+    let md = html2md::parse_html(&body);
+    fs::write(output, md.as_bytes()).unwrap();
+    println!("Converted markdown has been saved in {}.", output);
 }
